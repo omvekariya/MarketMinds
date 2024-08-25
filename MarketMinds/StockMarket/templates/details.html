@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketMinds : Stock Details</title>
+
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #121212;
+            color: #f8f9fa;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .card {
+            background-color: #1f2937;
+            color: #f8f9fa;
+        }
+
+        .card-header {
+            background-color: #111827;
+            color: #f8f9fa;
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: #fff;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 2s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .description h1.attribute {
+            font-weight: bold;
+            color: #f1c40f;
+        }
+
+        .description h5.value {
+            color: #f8f9fa;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            {% load static %}
+            <a class="navbar-brand d-flex gap-2" href="{% url 'index' %}"><img src="{% static 'media/logo.svg' %}"
+                    alt="logo"> MarketMinds</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'details' %}">Stock Detail</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'compare' %}">Compare Stocks</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'predict' %}">Predict Stock Prices</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="container-fluid px-5 py-4 animate-fade-in">
+        {% if not flag %}
+        <section class="mt-3">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-6 text-center mb-5">
+                        <h2 class="text-3xl font-bold">Please Fill Following Details</h2>
+                    </div>
+                </div>
+                <div class="card p-4 shadow-lg">
+                    <form method="POST" id="contactForm" name="contactForm">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-12 mb-4">
+                                <label for="company1" class="form-label">Enter Code of Company</label>
+                                <input type="text" class="form-control" name="company1" id="company1"
+                                    placeholder="Enter Yahoo Code For Stocks" required>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label for="start_date" class="form-label">Start Date</label>
+                                <input class="form-control" type="date" id="start_date" name="start_date" required>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label for="close_date" class="form-label">End Date</label>
+                                <input class="form-control" type="date" id="close_date" name="close_date" required>
+                            </div>
+                            <div class="col-md-12 text-center">
+                                <button type="submit" class="btn btn-primary w-100 py-2">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        {% elif flag %}
+        <!-- Stock Data Display -->
+        <div class="row mb-4">
+            <h1 class="text-center text-4xl font-bold">{{company}} Data From {{start_date}} to {{close_date}}</h1>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            <div class="card p-4 shadow-lg">
+                <h5 class="card-header">Last Day Price in Given Period</h5>
+                <h1 class="text-3xl mt-3 px-3">{{last_day_price}}</h1>
+            </div>
+            <div class="card p-4 shadow-lg">
+                <h5 class="card-header">Highest Price in Given Period</h5>
+                <h1 class="text-3xl mt-3 px-3">{{max_price}}</h1>
+            </div>
+            <div class="card p-4 shadow-lg">
+                <h5 class="card-header">Lowest Price in Given Period</h5>
+                <h1 class="text-3xl mt-3 px-3">{{min_price}}</h1>
+            </div>
+            <div class="card p-4 shadow-lg">
+                <h5 class="card-header">Change In Price In Given Period</h5>
+                <h1 class="text-3xl d-flex justify-content-between mt-3 px-3">{{change_in_price}}<span
+                        class="text-2xl text-{{change_color}}-500">{{change_in_precentage}}%</span></h1>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card p-4 shadow-lg">
+                    <h5 class="card-header">Highest Price Chart</h5>
+                    <div id="plotly-high"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card p-4 shadow-lg">
+                    <h5 class="card-header">Open Price Chart</h5>
+                    <div id="plotly-open"></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card p-4 shadow-lg">
+                    <h5 class="card-header">Low Chart</h5>
+                    <div id="plotly-low"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card p-4 shadow-lg">
+                    <h5 class="card-header">Close Price Chart</h5>
+                    <div id="plotly-close"></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card p-2 shadow-lg">
+                    <h5 class="card-header">Volume Chart</h5>
+                    <div id="plotly-volume"></div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <a class="w-full btn btn-primary p-2" href="{% url 'download' 0 %}">Export To CSV</a>
+        </div>
+
+        <div class="card mt-4">
+            <h5 class="card-header">{{company}} Data</h5>
+            <div class="card-body max-h-96 overflow-y-auto">
+                <div class="table-responsive">
+                    <table class="table table-striped table-dark table-bordered first">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Open</th>
+                                <th>High</th>
+                                <th>Low</th>
+                                <th>Close</th>
+                                <th>Volume</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for open,high,low,close,x,volume,date in df.values %}
+                            <tr>
+                                <td>{{date}}</td>
+                                <td>{{open}}</td>
+                                <td>{{high}}</td>
+                                <td>{{low}}</td>
+                                <td>{{close}}</td>
+                                <td>{{volume}}</td>
+                            </tr>
+                            {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card my-4">
+            <h5 class="card-header">Company Description</h5>
+            <div class='description p-4 shadow-lg rounded-lg bg-gray-800 max-h-96 overflow-y-auto'>
+                {% for key, value in description.items %}
+                <h1 class="attribute text-xl">{{key}}</h1>
+                <h5 class="value text-lg">{{value}}</h5>
+                <hr>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        function createPlotlyChart(id, title, xData, yData, yTitle, line_color, marker_color) {
+            var trace = {
+                x: xData,
+                y: yData,
+                mode: 'lines+markers',
+                type: 'scatter',
+                marker: {
+                    color: marker_color,
+                    size: 8
+                },
+                line: {
+                    color: line_color,
+                    width: 2
+                }
+            };
+
+            var layout = {
+                title: {
+                    text: title,
+                    font: {
+                        family: 'Poppins, sans-serif',
+                        size: 24,
+                        color: '#f8f9fa'
+                    }
+                },
+                xaxis: {
+                    title: 'Date',
+                    gridcolor: '#444',
+                    type: 'date'
+                },
+                yaxis: {
+                    title: yTitle,
+                    gridcolor: '#444'
+                },
+                paper_bgcolor: '#1f2937',
+                plot_bgcolor: '#1f2937',
+                font: {
+                    color: '#f8f9fa'
+                }
+            };
+
+            let controls = {
+                displayModeBar: true,
+                displaylogo: false,
+            }
+
+            Plotly.newPlot(id, [trace], layout, controls);
+        }
+
+        // Data for Charts
+        var dates = {{ x| safe }};
+        var high_values = {{ y_high| safe }};
+        var open_values = {{ y_open| safe }};
+        var low_values = {{ y_low| safe }};
+        var close_values = {{ y_close| safe }};
+        var volume_values = {{ y_volume| safe }};
+        console.log(dates);
+
+        // Create the charts
+        createPlotlyChart('plotly-high', 'Highest Prices Over Time', dates, high_values, 'Price', '#2ecc71', '#186a3b');
+        createPlotlyChart('plotly-open', 'Opening Prices Over Time', dates, open_values, 'Price', '#f4d03f', '#d4ac0d');
+        createPlotlyChart('plotly-low', 'Lowest Prices Over Time', dates, low_values, 'Price', '#e74c3c', '#922b21');
+        createPlotlyChart('plotly-close', 'Closing Prices Over Time', dates, close_values, 'Price', '#af7ac5', '#76448a');
+        createPlotlyChart('plotly-volume', 'Volume Over Time', dates, volume_values, 'Volume', '#3498db', '#21618c');
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

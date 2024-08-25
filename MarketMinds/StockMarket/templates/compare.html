@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketMinds : Stock Comapare</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #121212;
+            color: #f8f9fa;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .card {
+            background-color: #1f2937;
+            color: #f8f9fa;
+        }
+
+        .card-header {
+            background-color: #111827;
+            color: #f8f9fa;
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: #fff;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 2s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .description h1.attribute {
+            font-weight: bold;
+            color: #f1c40f;
+        }
+
+        .description h5.value {
+            color: #f8f9fa;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            {% load static %}
+            <a class="navbar-brand d-flex gap-2" href="{% url 'index' %}"><img src="{% static 'media/logo.svg' %}"
+                    alt="logo"> MarketMinds</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'details' %}">Stock Detail</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'compare' %}">Compare Stocks</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'predict' %}">Predict Stock Prices</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="container-fluid px-5 py-4 animate-fade-in">
+        {% if not flag %}
+        <section class="mt-3">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-6 text-center mb-5">
+                        <h2 class="text-3xl font-bold">Please Fill Following Details</h2>
+                    </div>
+                </div>
+                <div class="card p-4 shadow-lg">
+                    <form method="POST" id="contactForm" name="contactForm">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-12 mb-4">
+                                <label for="company1" class="form-label">Enter Code of Company1</label>
+                                <input type="text" class="form-control" name="company1" id="company1"
+                                    placeholder="Enter Yahoo Code For Stocks" required>
+                            </div>
+                            <div class="col-md-12 mb-4">
+                                <label for="company2" class="form-label">Enter Code of Company2</label>
+                                <input type="text" class="form-control" name="company2" id="company2"
+                                    placeholder="Enter Yahoo Code For Stocks" required>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label for="start_date" class="form-label">Start Date</label>
+                                <input class="form-control" type="date" id="start_date" name="start_date" required>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label for="close_date" class="form-label">End Date</label>
+                                <input class="form-control" type="date" id="close_date" name="close_date" required>
+                            </div>
+                            <div class="col-md-12 text-center">
+                                <button type="submit" class="btn btn-primary w-100 py-2">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        {% else %}
+        <div class="row mb-4">
+            <h1 class="text-center text-4xl font-bold">{{company1}} v/s {{company2}} From {{start_date}} to
+                {{close_date}}</h1>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            <div class="card p-4 shadow-lg">
+                <h5 class="card-header">{{company1}}<br> Last Day Price</h5>
+                <h1 class="text-3xl mt-3 px-3">{{last_day_price_stock1}}</h1>
+            </div>
+            <div class="card p-4 shadow-lg">
+                <h5 class="card-header">{{company1}}<br> Highest Price in Given Period</h5>
+                <h1 class="text-3xl mt-3 px-3">{{max_price_stock1}}</h1>
+            </div>
+            <div class="card p-4 shadow-lg">
+                <h5 class="card-header">{{company1}}<br> Lowest Price in Given Period</h5>
+                <h1 class="text-3xl mt-3 px-3">{{min_price_stock1}}</h1>
+            </div>
+            <div class="card p-4 shadow-lg">
+                <h5 class="card-header">{{company1}} <br>Change In Price In Given Period</h5>
+                <h1 class="text-3xl d-flex justify-content-between mt-3 px-3">{{change_in_price_stock1}}<span
+                        class="text-2xl text-{{change_color1}}-500">{{change_in_precentage_stock1}}%</span></h1>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            <div class="card p-4 shadow-lg">
+                <h5 class="card-header">{{company2}}<br> Last Day Price</h5>
+                <h1 class="text-3xl mt-3 px-3">{{last_day_price_stock2}}</h1>
+            </div>
+            <div class="card p-4 shadow-lg">
+                <h5 class="card-header">{{company2}}<br> Highest Price in Given Period</h5>
+                <h1 class="text-3xl mt-3 px-3">{{max_price_stock2}}</h1>
+            </div>
+            <div class="card p-4 shadow-lg">
+                <h5 class="card-header">{{company2}}<br> Lowest Price in Given Period</h5>
+                <h1 class="text-3xl mt-3 px-3">{{min_price_stock2}}</h1>
+            </div>
+            <div class="card p-4 shadow-lg">
+                <h5 class="card-header">{{company2}} <br>Change In Price In Given Period</h5>
+                <h1 class="text-3xl d-flex justify-content-between mt-3 px-3">{{change_in_price_stock2}}<span
+                        class="text-2xl text-{{change_color2}}-500">{{change_in_precentage_stock2}}%</span></h1>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card p-4 shadow-lg">
+                    <h5 class="card-header">Highest Price Chart</h5>
+                    <div id="plotly-high"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card p-4 shadow-lg">
+                    <h5 class="card-header">Open Price Chart</h5>
+                    <div id="plotly-open"></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card p-4 shadow-lg">
+                    <h5 class="card-header">Low Chart</h5>
+                    <div id="plotly-low"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card p-4 shadow-lg">
+                    <h5 class="card-header">Close Price Chart</h5>
+                    <div id="plotly-close"></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card p-2 shadow-lg">
+                    <h5 class="card-header">Volume Chart</h5>
+                    <div id="plotly-volume"></div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <a class="w-full btn btn-primary p-2" href="{% url 'download' 1 %}">Export To CSV ({{company1}})</a>
+        </div>
+
+        <div class="card mt-4">
+            <h5 class="card-header">{{company1}} Data</h5>
+            <div class="card-body max-h-96 overflow-y-auto">
+                <div class="table-responsive">
+                    <table class="table table-striped table-dark table-bordered first">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Open</th>
+                                <th>High</th>
+                                <th>Low</th>
+                                <th>Close</th>
+                                <th>Volume</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for open,high,low,close,x,volume,date in df1.values %}
+                            <tr>
+                                <td>{{date}}</td>
+                                <td>{{open}}</td>
+                                <td>{{high}}</td>
+                                <td>{{low}}</td>
+                                <td>{{close}}</td>
+                                <td>{{volume}}</td>
+                            </tr>
+                            {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <a class="w-full btn btn-primary p-2 mt-4" href="{% url 'download' 2 %}">Export To CSV ({{company2}})</a>
+        </div>
+
+        <div class="card my-4">
+            <h5 class="card-header">{{company2}} Data</h5>
+            <div class="card-body max-h-96 overflow-y-auto">
+                <div class="table-responsive">
+                    <table class="table table-striped table-dark table-bordered first">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Open</th>
+                                <th>High</th>
+                                <th>Low</th>
+                                <th>Close</th>
+                                <th>Volume</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for open,high,low,close,x,volume,date in df2.values %}
+                            <tr>
+                                <td>{{date}}</td>
+                                <td>{{open}}</td>
+                                <td>{{high}}</td>
+                                <td>{{low}}</td>
+                                <td>{{close}}</td>
+                                <td>{{volume}}</td>
+                            </tr>
+                            {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        function createPlotlyChart(id, title, xData1, xData2, yData1, yData2, yTitle, comp1, comp2) {
+
+            var trace1 = {
+                name: comp1,
+                x: xData1,
+                y: yData1,
+                mode: 'lines+markers',
+                type: 'scatter',
+                marker: {
+                    color: '#ca6f1e',
+                    size: 8
+                },
+                line: {
+                    color: '#f39c12',
+                    width: 2
+                }
+            };
+            var trace2 = {
+                name: comp2,
+                x: xData2,
+                y: yData2,
+                mode: 'lines+markers',
+                type: 'scatter',
+                marker: {
+                    color: '#1e8449',
+                    size: 8
+                },
+                line: {
+                    color: '#58d68d',
+                    width: 2
+                }
+            };
+
+            var layout = {
+                title: {
+                    text: title,
+                    font: {
+                        family: 'Poppins, sans-serif',
+                        size: 24,
+                        color: '#f8f9fa'
+                    }
+                },
+                xaxis: {
+                    title: 'Date',
+                    gridcolor: '#444',
+                    type: 'date'
+                },
+                yaxis: {
+                    title: yTitle,
+                    gridcolor: '#444'
+                },
+                paper_bgcolor: '#1f2937',
+                plot_bgcolor: '#1f2937',
+                font: {
+                    color: '#f8f9fa'
+                },
+                legend: {
+                    x: 1,
+                    y: 0,
+                    xanchor: 'left',
+                    yanchor: 'bottom',
+                    orientation: 'v',
+                    font: {
+                        family: 'Arial, sans-serif',
+                        size: 12,
+                        color: '#ffffff'
+                    },
+                    
+                }
+            };
+
+            let controls = {
+                displayModeBar: true,
+                displaylogo: false,
+            }
+
+            Plotly.newPlot(id, [trace1, trace2], layout, controls);
+        }
+        
+        var dates = {{ x| safe }};
+        var company1 = "{{ company1| safe }}";
+        var company2 = "{{ company2| safe }}";
+
+        var high_values1 = {{ y_high_stock1| safe }};
+        var high_values2 = {{ y_high_stock2| safe }};
+
+        var open_values1 = {{ y_open_stock1| safe }};
+        var open_values2 = {{ y_open_stock2| safe }};
+
+        var low_values1 = {{ y_low_stock1| safe }};
+        var low_values2 = {{ y_low_stock2| safe }};
+
+        var close_values1 = {{ y_close_stock1| safe }};
+        var close_values2 = {{ y_close_stock2| safe }};
+
+        var volume_values1 = {{ y_volume_stock1| safe }};
+        var volume_values2 = {{ y_volume_stock2| safe }};
+
+        createPlotlyChart('plotly-high', 'Highest Prices Over Time', dates, dates, high_values1, high_values2, 'Price', company1, company2);
+        createPlotlyChart('plotly-open', 'Opening Prices Over Time', dates, dates, open_values1, open_values2, 'Price', company1, company2);
+        createPlotlyChart('plotly-low', 'Lowest Prices Over Time', dates, dates, low_values1, low_values2, 'Price', company1, company2);
+        createPlotlyChart('plotly-close', 'Closing Prices Over Time', dates, dates, close_values1, close_values2, 'Price', company1, company2);
+        createPlotlyChart('plotly-volume', 'Volume Over Time', dates, dates, volume_values1, volume_values2, 'Volume', company1, company2);
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
