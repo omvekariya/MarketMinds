@@ -232,9 +232,9 @@ def predict(request):
         for i in range(1,days+1):
             predicted_x.append( str((date.today() + timedelta(days=i)).strftime('%Y-%m-%d')))
         if predicted[0]<predicted[-1] and y_high[-1]<predicted[-1]:
-            buy="Yes"
+            buy="Yes ✅"
         else:
-            buy="No"
+            buy="No ❌"
         dic={}
         dic['Date']=predicted_x
         dic['Prediction']=predicted

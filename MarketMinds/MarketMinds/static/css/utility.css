@@ -1,0 +1,78 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #121212;
+    color: #f8f9fa;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.card {
+    background-color: #1f2937;
+    color: #f8f9fa;
+}
+
+.card h1{
+    font-weight: bolder;
+}
+
+.card-header {
+    color: #f8f9fa;
+    font-weight: bold;
+}
+
+.footer {
+    background: #2c3e50;
+    color: #fff;
+    padding: 40px 0;
+    text-align: center;
+}
+
+.animate-fade-in {
+    animation: fadeIn 2s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.description h1.attribute {
+    font-weight: bold;
+    color: #f1c40f;
+}
+
+.description h5.value {
+    color: #f8f9fa;
+}
+
+/* Custom Scrollbar Styling */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #1f1f1f;
+    border-radius: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #0D6CF9, #0D6CF9);
+    border-radius: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #0D6CF9, #0D6CF9);
+}
+
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #0D6CF9 #1f1f1f;
+}

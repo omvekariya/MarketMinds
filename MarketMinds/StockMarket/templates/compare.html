@@ -1,75 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-
+    {% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MarketMinds : Stock Comapare</title>
+    <link rel="shortcut icon" href="{% static 'media/logo.svg' %}" type="image/x-icon">
     <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">
-
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #121212;
-            color: #f8f9fa;
-        }
-
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 1.5rem;
-        }
-
-        .card {
-            background-color: #1f2937;
-            color: #f8f9fa;
-        }
-
-        .card-header {
-            background-color: #111827;
-            color: #f8f9fa;
-        }
-
-        .footer {
-            background: #2c3e50;
-            color: #fff;
-            padding: 40px 0;
-            text-align: center;
-        }
-
-        .animate-fade-in {
-            animation: fadeIn 2s;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        .description h1.attribute {
-            font-weight: bold;
-            color: #f1c40f;
-        }
-
-        .description h5.value {
-            color: #f8f9fa;
-        }
-    </style>
+    <!-- Custom css -->
+    <link rel="stylesheet" href="{% static 'css/utility.css' %}">
 </head>
 
 <body class="bg-gray-900 text-white">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            {% load static %}
             <a class="navbar-brand d-flex gap-2" href="{% url 'index' %}"><img src="{% static 'media/logo.svg' %}"
                     alt="logo"> MarketMinds</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -138,41 +87,40 @@
                 {{close_date}}</h1>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-            <div class="card p-4 shadow-lg">
-                <h5 class="card-header">{{company1}}<br> Last Day Price</h5>
-                <h1 class="text-3xl mt-3 px-3">{{last_day_price_stock1}}</h1>
+            <div class="card p-4 shadow-lg" style="background: linear-gradient(to bottom right, #9740e7, #772ac0);">
+                <h5 class="card-header text-white" style="background-color: #551096;">{{company1}}<br> Last Day Price</h5>
+                <h1 class="text-3xl mt-3 px-3 text-white">{{last_day_price_stock1}}</h1>
             </div>
-            <div class="card p-4 shadow-lg">
-                <h5 class="card-header">{{company1}}<br> Highest Price in Given Period</h5>
-                <h1 class="text-3xl mt-3 px-3">{{max_price_stock1}}</h1>
+            <div class="card p-4 shadow-lg" style="background: linear-gradient(to bottom right, #28a745, #218838);">
+                <h5 class="card-header bg-success text-white">{{company1}}<br> Highest Price in Given Period</h5>
+                <h1 class="text-3xl mt-3 px-3 text-white">{{max_price_stock1}}</h1>
             </div>
-            <div class="card p-4 shadow-lg">
-                <h5 class="card-header">{{company1}}<br> Lowest Price in Given Period</h5>
-                <h1 class="text-3xl mt-3 px-3">{{min_price_stock1}}</h1>
+            <div class="card p-4 shadow-lg" style="background: linear-gradient(to bottom right, #dc3545, #c82333);">
+                <h5 class="card-header bg-danger text-white">{{company1}}<br> Lowest Price in Given Period</h5>
+                <h1 class="text-3xl mt-3 px-3 text-white">{{min_price_stock1}}</h1>
             </div>
-            <div class="card p-4 shadow-lg">
-                <h5 class="card-header">{{company1}} <br>Change In Price In Given Period</h5>
-                <h1 class="text-3xl d-flex justify-content-between mt-3 px-3">{{change_in_price_stock1}}<span
-                        class="text-2xl text-{{change_color1}}-500">{{change_in_precentage_stock1}}%</span></h1>
+            <div class="card p-4 shadow-lg" style="background: linear-gradient(to bottom right, #007bff, #0069d9);">
+                <h5 class="card-header bg-primary text-white">{{company1}} <br>Change In Price In Given Period</h5>
+                <h1 class="text-3xl d-flex justify-content-between mt-3 px-3 text-white">{{change_in_price_stock1}}<span class="text-{{change_color1}}-500">{{change_in_precentage_stock1}}%</span></h1>
             </div>
         </div>
+        
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-            <div class="card p-4 shadow-lg">
-                <h5 class="card-header">{{company2}}<br> Last Day Price</h5>
-                <h1 class="text-3xl mt-3 px-3">{{last_day_price_stock2}}</h1>
+            <div class="card p-4 shadow-lg" style="background: linear-gradient(to bottom right, #9740e7, #772ac0);">
+                <h5 class="card-header text-white" style="background-color: #551096;">{{company2}}<br> Last Day Price</h5>
+                <h1 class="text-3xl mt-3 px-3 text-white">{{last_day_price_stock2}}</h1>
             </div>
-            <div class="card p-4 shadow-lg">
-                <h5 class="card-header">{{company2}}<br> Highest Price in Given Period</h5>
-                <h1 class="text-3xl mt-3 px-3">{{max_price_stock2}}</h1>
+            <div class="card p-4 shadow-lg" style="background: linear-gradient(to bottom right, #28a745, #218838);">
+                <h5 class="card-header bg-success text-white">{{company2}}<br> Highest Price in Given Period</h5>
+                <h1 class="text-3xl mt-3 px-3 text-white">{{max_price_stock2}}</h1>
             </div>
-            <div class="card p-4 shadow-lg">
-                <h5 class="card-header">{{company2}}<br> Lowest Price in Given Period</h5>
-                <h1 class="text-3xl mt-3 px-3">{{min_price_stock2}}</h1>
+            <div class="card p-4 shadow-lg" style="background: linear-gradient(to bottom right, #dc3545, #c82333);">
+                <h5 class="card-header bg-danger text-white">{{company2}}<br> Lowest Price in Given Period</h5>
+                <h1 class="text-3xl mt-3 px-3 text-white">{{min_price_stock2}}</h1>
             </div>
-            <div class="card p-4 shadow-lg">
-                <h5 class="card-header">{{company2}} <br>Change In Price In Given Period</h5>
-                <h1 class="text-3xl d-flex justify-content-between mt-3 px-3">{{change_in_price_stock2}}<span
-                        class="text-2xl text-{{change_color2}}-500">{{change_in_precentage_stock2}}%</span></h1>
+            <div class="card p-4 shadow-lg" style="background: linear-gradient(to bottom right, #007bff, #0069d9);">
+                <h5 class="card-header bg-primary text-white">{{company2}} <br>Change In Price In Given Period</h5>
+                <h1 class="text-3xl d-flex justify-content-between mt-3 px-3 text-white">{{change_in_price_stock2}}<span class="text-{{change_color2}}-500">{{change_in_precentage_stock2}}%</span></h1>
             </div>
         </div>
 
@@ -180,37 +128,32 @@
         <div class="row mb-4">
             <div class="col-md-12">
                 <div class="card p-4 shadow-lg">
-                    <h5 class="card-header">Highest Price Chart</h5>
                     <div id="plotly-high"></div>
                 </div>
             </div>
         </div>
 
-        <div class="row mb-4">
+        <div class="row mb-4 g-4">
             <div class="col-md-6">
                 <div class="card p-4 shadow-lg">
-                    <h5 class="card-header">Open Price Chart</h5>
                     <div id="plotly-open"></div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="card p-4 shadow-lg">
-                    <h5 class="card-header">Low Chart</h5>
                     <div id="plotly-low"></div>
                 </div>
             </div>
         </div>
 
-        <div class="row mb-4">
+        <div class="row mb-4 g-4">
             <div class="col-md-6">
                 <div class="card p-4 shadow-lg">
-                    <h5 class="card-header">Close Price Chart</h5>
                     <div id="plotly-close"></div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="card p-2 shadow-lg">
-                    <h5 class="card-header">Volume Chart</h5>
+                <div class="card p-4 shadow-lg">
                     <div id="plotly-volume"></div>
                 </div>
             </div>
@@ -222,7 +165,7 @@
 
         <div class="card mt-4">
             <h5 class="card-header">{{company1}} Data</h5>
-            <div class="card-body max-h-96 overflow-y-auto">
+            <div class="card-body max-h-96 overflow-y-auto custom-scrollbar">
                 <div class="table-responsive">
                     <table class="table table-striped table-dark table-bordered first">
                         <thead>
@@ -257,7 +200,7 @@
 
         <div class="card my-4">
             <h5 class="card-header">{{company2}} Data</h5>
-            <div class="card-body max-h-96 overflow-y-auto">
+            <div class="card-body max-h-96 overflow-y-auto custom-scrollbar">
                 <div class="table-responsive">
                     <table class="table table-striped table-dark table-bordered first">
                         <thead>
@@ -365,6 +308,7 @@
             let controls = {
                 displayModeBar: true,
                 displaylogo: false,
+                responsive: true,
             }
 
             Plotly.newPlot(id, [trace1, trace2], layout, controls);
