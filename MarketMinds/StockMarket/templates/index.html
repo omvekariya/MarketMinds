@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Index - Arsha Bootstrap Template</title>
+  <title>MarketMinds : Home</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
 
@@ -44,6 +44,9 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
+            <a class="nav-link" href="{% url 'company-search' %}">Company Detail</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="{% url 'details' %}">Stock Detail</a>
           </li>
           <li class="nav-item">
@@ -67,7 +70,7 @@
         <h1>Innovative Solutions for the Financial World</h1>
         <p>Your gateway to smarter investments with cutting-edge technology.</p>
         <div class="d-flex">
-          <a href="{% url 'details' %}" class="btn-get-started">Get Started</a>
+          <a href="{% url 'company-search' %}" class="btn-get-started">Get Started</a>
           <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8"
             class="glightbox btn-watch-video d-flex align-items-center"><i class="bi bi-play-circle"></i><span>Watch
               Video</span></a>
@@ -201,7 +204,7 @@
         <p>Take control of your financial future with our powerful tools and insights. Sign up now and start making smarter investment decisions.</p>
       </div>
       <div class="col-xl-3 cta-btn-container text-center">
-        <a class="cta-btn align-middle" href="{% url 'details' %}">Get Started</a>
+        <a class="cta-btn align-middle" href="{% url 'company-search' %}">Get Started</a>
       </div>
     </div>
   </div>

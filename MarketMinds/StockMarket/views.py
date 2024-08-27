@@ -1,4 +1,6 @@
 from django.shortcuts import render,HttpResponse
+from django.http import JsonResponse
+import requests
 import yfinance as yf
 import csv
 import numpy as np
@@ -13,11 +15,50 @@ from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.layers import LSTM
 
-
-# Create your views here.
 df=None
 df1=None
 df2=None
+
+def company_search(request):
+    return render(request, 'company_search.html')
+
+def get_companies(request):
+    company_name = request.GET.get('company_name')
+    
+    suggestions = get_company_suggestions(company_name)
+    if not suggestions:
+        return JsonResponse({"error": "No company found for " + company_name}, status=404)
+    
+    return JsonResponse({"data" : suggestions})
+
+def get_company_suggestions(query):
+    url = f'https://query2.finance.yahoo.com/v1/finance/search?q={query}'
+    response = requests.get(url, headers = {'User-agent': 'Super Bot Power Level Over 9000'})
+    if response.status_code == 200:
+        return response.json()['quotes']
+    return []
+
+def get_company(request):
+    symbol = request.GET.get('symbol')
+    company_info, company_news = fetch_company_details(symbol)
+    return JsonResponse({
+        "company_info": company_info[0],
+        "company_news": company_news,
+    })
+
+def fetch_company_details(symbol):
+    url = f'https://query2.finance.yahoo.com/v1/finance/search?q={symbol}'
+    response = requests.get(url, headers = {'User-agent': 'Super Bot Power Level Over 9000'})
+    if response.status_code == 200:
+        return response.json()['quotes'], response.json()['news']
+    return {}
+
+def fetch_company_news(symbol):
+    url = f'https://query2.finance.yahoo.com/v2/finance/news?symbols={symbol}'
+    response = requests.get(url, headers = {'User-agent': 'Super Bot Power Level Over 9000'})
+    if response.status_code == 200:
+        return response.json().get('items', {}).get('result', [])
+    return []
 
 def index(request):
     return render(request, 'index.html')
@@ -288,3 +329,4 @@ def download(request,id):
         for ind in df.index:
             writer.writerow([ind,df['symbol'][ind],df['name'][ind],df['high'][ind],df['low'][ind],df['open'][ind],df['close'][ind],df['net change'][ind],df['% Change'][ind],df['industory'][ind],df['country'][ind]])
     return response
+
