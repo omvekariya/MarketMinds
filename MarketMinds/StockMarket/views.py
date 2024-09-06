@@ -1,3 +1,7 @@
+# MarketMinds © 2024 by Om Vekariya
+# Licensed under the MarketMinds Proprietary Software License
+# Commercial use, personal use, modification, and redistribution are prohibited.
+
 from django.shortcuts import render,HttpResponse
 from django.http import JsonResponse
 import requests
