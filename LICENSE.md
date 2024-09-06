@@ -36,7 +36,7 @@ In no event shall the Licensor be liable for any direct, indirect, incidental, s
 
 ### 7. **Governing Law and Dispute Resolution**
 
-This Agreement shall be governed by and construed in accordance with the laws of [Your Jurisdiction]. Any disputes arising out of or related to this Agreement shall be resolved in the courts of [Your Jurisdiction].
+This Agreement shall be governed by and construed in accordance with the laws of India. Any disputes arising out of or related to this Agreement shall be resolved in the courts of Ahmedabad, India.
 
 ### 8. **Contact Information**
 
