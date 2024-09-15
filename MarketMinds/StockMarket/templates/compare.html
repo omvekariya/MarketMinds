@@ -53,6 +53,14 @@
         {% if not flag %}
         <section class="mt-3">
             <div class="container">
+                {% if err %}
+                <div class="row justify-content-center">
+                    <div class="col-md-6 text-center mb-5">
+                        <h2 class="text-xl text-danger">{{err}}</h2>
+                        <h2 class="text-xl text-danger">{{errSolution}}</h2>
+                    </div>
+                </div>
+                {% endif %}
                 <div class="row justify-content-center">
                     <div class="col-md-6 text-center mb-5">
                         <h2 class="text-3xl font-bold">Please Fill Following Details</h2>
@@ -74,11 +82,11 @@
                             </div>
                             <div class="col-md-6 mb-4">
                                 <label for="start_date" class="form-label">Start Date</label>
-                                <input class="form-control" type="date" id="start_date" name="start_date" required>
+                                <input class="form-control" type="date" id="start_date" name="start_date" onchange="setEndDateMin()" required>
                             </div>
                             <div class="col-md-6 mb-4">
                                 <label for="close_date" class="form-label">End Date</label>
-                                <input class="form-control" type="date" id="close_date" name="close_date" required>
+                                <input class="form-control" type="date" id="close_date" name="close_date" required disabled>
                             </div>
                             <div class="col-md-12 text-center">
                                 <button type="submit" class="btn btn-primary w-100 py-2">Submit</button>
@@ -241,6 +249,28 @@
     <!-- Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script>
+        document.getElementById('start_date').setAttribute('max', getToday());
+        document.getElementById('close_date').setAttribute('max', getToday());
+
+        function getToday() {
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0');
+            var yyyy = today.getFullYear();
+            return yyyy + '-' + mm + '-' + dd;
+        }
+
+        function setEndDateMin() {
+            var startDate = document.getElementById('start_date').value;
+            if (startDate) {
+                document.getElementById('close_date').disabled = false;
+                document.getElementById('close_date').setAttribute('min', startDate);
+            } else {
+                document.getElementById('close_date').disabled = true;
+            }
+        }
+    </script>
+    <script>
         function createPlotlyChart(id, title, xData1, xData2, yData1, yData2, yTitle, comp1, comp2) {
 
             var trace1 = {
@@ -254,6 +284,7 @@
                     size: 8
                 },
                 line: {
+                    shape: 'spline',
                     color: '#f39c12',
                     width: 2
                 }
@@ -269,6 +300,7 @@
                     size: 8
                 },
                 line: {
+                    shape: 'spline',
                     color: '#58d68d',
                     width: 2
                 }

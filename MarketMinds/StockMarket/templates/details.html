@@ -4,7 +4,8 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    {% load static %}
+{% load static %}
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,6 +55,14 @@
         {% if not flag %}
         <section class="mt-3">
             <div class="container">
+                {% if err %}
+                <div class="row justify-content-center">
+                    <div class="col-md-6 text-center mb-5">
+                        <h2 class="text-xl text-danger">{{err}}</h2>
+                        <h2 class="text-xl text-danger">{{errSolution}}</h2>
+                    </div>
+                </div>
+                {% endif %}
                 <div class="row justify-content-center">
                     <div class="col-md-6 text-center mb-5">
                         <h2 class="text-3xl font-bold">Please Fill Following Details</h2>
@@ -70,11 +79,11 @@
                             </div>
                             <div class="col-md-6 mb-4">
                                 <label for="start_date" class="form-label">Start Date</label>
-                                <input class="form-control" type="date" id="start_date" name="start_date" required>
+                                <input class="form-control" type="date" id="start_date" name="start_date" onchange="setEndDateMin()" required>
                             </div>
                             <div class="col-md-6 mb-4">
                                 <label for="close_date" class="form-label">End Date</label>
-                                <input class="form-control" type="date" id="close_date" name="close_date" required>
+                                <input class="form-control" type="date" id="close_date" name="close_date" required disabled>
                             </div>
                             <div class="col-md-12 text-center">
                                 <button type="submit" class="btn btn-primary w-100 py-2">Submit</button>
@@ -92,7 +101,8 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <div class="card p-4 shadow-lg" style="background: linear-gradient(to bottom right, #9740e7, #772ac0);">
-                <h5 class="card-header text-white" style="background-color: #551096;">Last Day Price in Given Period</h5>
+                <h5 class="card-header text-white" style="background-color: #551096;">Last Day Price in Given Period
+                </h5>
                 <h1 class="text-3xl mt-3 px-3 text-white">{{last_day_price}}</h1>
             </div>
             <div class="card p-4 shadow-lg" style="background: linear-gradient(to bottom right, #28a745, #218838);">
@@ -105,7 +115,8 @@
             </div>
             <div class="card p-4 shadow-lg" style="background: linear-gradient(to bottom right, #007bff, #0069d9);">
                 <h5 class="card-header bg-primary text-white">Change In Price In Given Period</h5>
-                <h1 class="text-3xl d-flex justify-content-between mt-3 px-3 text-white">{{change_in_price}}<span class="text-{{change_color}}-500">{{change_in_precentage}}%</span></h1>
+                <h1 class="text-3xl d-flex justify-content-between mt-3 px-3 text-white">{{change_in_price}}<span
+                        class="text-{{change_color}}-500">{{change_in_precentage}}%</span></h1>
             </div>
         </div>
 
@@ -195,6 +206,28 @@
     <!-- Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script>
+        document.getElementById('start_date').setAttribute('max', getToday());
+        document.getElementById('close_date').setAttribute('max', getToday());
+
+        function getToday() {
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0');
+            var yyyy = today.getFullYear();
+            return yyyy + '-' + mm + '-' + dd;
+        }
+
+        function setEndDateMin() {
+            var startDate = document.getElementById('start_date').value;
+            if (startDate) {
+                document.getElementById('close_date').disabled = false;
+                document.getElementById('close_date').setAttribute('min', startDate);
+            } else {
+                document.getElementById('close_date').disabled = true;
+            }
+        }
+    </script>
+    <script>
         function createPlotlyChart(id, title, xData, yData, yTitle, line_color, marker_color) {
             var trace = {
                 x: xData,
@@ -206,9 +239,11 @@
                     size: 8
                 },
                 line: {
+                    shape: 'spline',
                     color: line_color,
                     width: 2
-                }
+                },
+                fill: 'tozeroy'
             };
 
             var layout = {
@@ -245,7 +280,6 @@
             Plotly.newPlot(id, [trace], layout, controls);
         }
 
-        // Data for Charts
         var dates = {{ x| safe }};
         var high_values = {{ y_high| safe }};
         var open_values = {{ y_open| safe }};

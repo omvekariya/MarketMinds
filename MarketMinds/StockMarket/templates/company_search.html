@@ -100,6 +100,7 @@
             border-top-left-radius: 0;
             border-top-right-radius: 0;
             margin-bottom: 2rem;
+            display: none;
         }
 
         .suggestion-item {
@@ -161,6 +162,7 @@
             </div>
         </div>
     </nav>
+
     <div class="container py-5 animate-fade-in">
         <h1 class="text-3xl font-bold text-center mb-5">Search for a Company</h1>
         <div class="mb-3 bg-gray-600">
@@ -181,9 +183,12 @@
                     .then(response => response.json())
                     .then(response => {
                         let suggestionsDiv = document.getElementById('suggestions');
+                        suggestionsDiv.style.display = 'block';
                         suggestionsDiv.innerHTML = '';
-                        if (response.error) {
-                            suggestionsDiv.innerHTML = '<p class="text-center text-gray-500 p-3">No suggestions found</p>';
+                        if (response.internetError) {
+                            suggestionsDiv.innerHTML = `<p class="text-center p-3">${response.internetError}</p>`;
+                        } else if (response.error) {
+                            suggestionsDiv.innerHTML = '<p class="text-center p-3">No suggestions found</p>';
                         } else {
                             var data = response.data;
                             data.forEach(item => {
@@ -216,7 +221,7 @@
                         <p><strong>Exchange:</strong> ${data.company_info.exchDisp}</p>
                         <p><strong>Company Code:</strong> 
                             <span id="company-code">${data.company_info.symbol}</span>
-                            <button class="btn btn-sm btn-primary ms-2" onclick="copyToClipboard('${data.company_info.symbol}')">Copy</button>
+                            <button id="copyBtn" class="btn btn-sm btn-primary ms-2" onclick="copyToClipboard('${data.company_info.symbol}')">Copy</button>
                         </p>
                         <p><strong>Industry:</strong> ${data.company_info.industry}</p>
                     `;
@@ -235,9 +240,11 @@
 
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                alert('Company code copied to clipboard!');
+                let copyBtn = document.getElementById('copyBtn');
+                copyBtn.innerText = "Copied!";
             }).catch(err => {
-                alert('Failed to copy text: ', err);
+                let copyBtn = document.getElementById('copyBtn');
+                copyBtn.innerText = "Copy";
             });
         }
     </script>
