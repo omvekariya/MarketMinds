@@ -268,7 +268,7 @@ def predict(request):
             model.fit(x_train, y_train, batch_size=512, epochs=10, shuffle=True, validation_split=0.05, callbacks = [checkpoint,stop])
             model.load_weights("./model_checkpoint.weights.h5")
             
-            df_test = yf.download(stocks, '2000-01-01', '2032-01-01')
+            df_test = yf.download(stocks, start_date, close_date)
             df_test=df_test.drop(['Open','High','Volume','Low','Adj Close'],axis=1)
             predicted=[]
             for i in range(days):
@@ -314,7 +314,7 @@ def predict(request):
                 "buy":buy,
                 "change_in_precentage":round(((max(predicted)-min(predicted))/(min(predicted)))*100,2),
                 "change_in_price":round((max(predicted)-min(predicted)),2),
-                "change_color": 'red' if round(((max(predicted)-min(predicted))/(min(predicted)))*100,2) < 0 else 'green'
+                "change_color": 'green' if predicted[0]<predicted[-1] and y_high[-1]<predicted[-1] else 'red'
             }
         except Exception as e:
             context = {

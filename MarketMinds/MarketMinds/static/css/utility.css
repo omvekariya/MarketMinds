@@ -9,6 +9,7 @@ body {
 }
 
 .card {
+    background-color: rgba(55, 65, 81);
     color: #f8f9fa;
 }
 
@@ -17,6 +18,7 @@ body {
 }
 
 .card-header {
+    background-color: rgba(55, 65, 81);
     color: #f8f9fa;
     font-weight: bold;
 }
